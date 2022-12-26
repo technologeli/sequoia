@@ -8,7 +8,7 @@ use super::input::Input;
 pub trait Layer {
     fn on_attach(&mut self) {}
     fn on_detach(&mut self) {}
-    fn on_update(&mut self, _input: &Input) {}
+    fn on_update(&mut self, _target: &mut Frame, _input: &Input) {}
     fn on_event(&mut self, _event: &mut Option<super::event::Event>) {}
     fn on_egui_render(
         &mut self,

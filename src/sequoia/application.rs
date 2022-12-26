@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use glium::{glutin, Surface};
+use glium::glutin;
 
 use super::{event, input, keycode, layer, mousecode};
 
@@ -13,8 +13,10 @@ pub struct Application {
 
 impl Application {
     pub fn new(display: glium::Display, event_loop: &glutin::event_loop::EventLoop<()>) -> Self {
+
+        let egui_glium = egui_glium::EguiGlium::new(&display, event_loop);
         Self {
-            egui_glium: egui_glium::EguiGlium::new(&display, event_loop),
+            egui_glium,
             layer_stack: layer::LayerStack::new(),
             display,
             input: input::Input {
@@ -168,10 +170,8 @@ impl Application {
         event_loop.run(move |ev, _, control_flow| {
             let mut target = self.display.draw();
 
-            target.clear_color(0.2, 0.2, 0.5, 1.0);
-
             for layer in self.layer_stack.iter_mut() {
-                layer.on_update(&self.input);
+                layer.on_update(&mut target, &self.input);
             }
 
             for layer in self.layer_stack.iter_mut() {
